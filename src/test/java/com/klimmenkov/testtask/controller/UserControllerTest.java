@@ -10,6 +10,8 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.MvcResult;
+import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
 import java.util.Calendar;
 import java.util.Date;
@@ -19,8 +21,7 @@ import java.util.Map;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.notNullValue;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest
@@ -35,7 +36,7 @@ public class UserControllerTest {
         Calendar calendar = Calendar.getInstance();
         calendar.set(2000, Calendar.JANUARY, 1);
         Date birthDate = calendar.getTime();
-        User user = new User("Petr", "Kulinich", "petr@example.com", birthDate, "123 Main St", "0506667788");
+        User user = new User("petr@gmail.com", "Petr", "Kulinich", birthDate, "123 Main St", "0506667788");
 
         String userJson = mockMvc.perform(post("/users/create")
                         .contentType(MediaType.APPLICATION_JSON)
@@ -60,7 +61,7 @@ public class UserControllerTest {
         Calendar calendar = Calendar.getInstance();
         calendar.set(1995, Calendar.JANUARY, 1);
         Date birthDate = calendar.getTime();
-        User originalUser = new User("John", "Doe", "john@example.com", birthDate, "123 Main St", "555-555-5555");
+        User originalUser = new User("john_doe@gmail.com", "John", "Doe", birthDate, "123 Main St", "555-555-5555");
 
         String userJson = mockMvc.perform(post("/users/create")
                         .contentType(MediaType.APPLICATION_JSON)
@@ -91,12 +92,12 @@ public class UserControllerTest {
     public void testUpdateUser() throws Exception {
         mockMvc.perform(put("/users/{userId}", 3L)
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(asJsonString(new User("UpdatedEmail", "UpdatedFirstName", "UpdatedLastName",
+                        .content(asJsonString(new User("test_updated@gmail.com", "UpdatedFirstName", "UpdatedLastName",
                                 new Date(), "UpdatedAddress", "UpdatedPhoneNumber"))))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.id", notNullValue()))
                 .andExpect(jsonPath("$.firstName", is("UpdatedFirstName")))
-                .andExpect(jsonPath("$.email", is("UpdatedEmail")));
+                .andExpect(jsonPath("$.email", is("test_updated@gmail.com")));
     }
 
     @Test
@@ -138,6 +139,55 @@ public class UserControllerTest {
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(asJsonString(user)))
                 .andExpect(status().isBadRequest());
+    }
+
+    @Test
+    public void testCreateUserWithEmailValidationError() throws Exception {
+        Calendar calendar = Calendar.getInstance();
+        calendar.set(2000, Calendar.JANUARY, 1);
+        Date birthDate = calendar.getTime();
+        User user = new User("null", "test", "TEST", birthDate, "ADDRESS", "0997975514");
+
+        String userJson = asJsonString(user);
+
+        MvcResult result = mockMvc.perform(MockMvcRequestBuilders.post("/users/create")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(userJson))
+                .andExpect(status().isBadRequest())
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+                .andReturn();
+    }
+
+    @Test
+    public void testCreateUserWithNullFirstName() throws Exception {
+        Calendar calendar = Calendar.getInstance();
+        calendar.set(2000, Calendar.JANUARY, 1);
+        Date birthDate = calendar.getTime();
+        User user = new User("test@example.com", null, "TEST", birthDate, "ADDRESS", "0997975514");
+
+        String userJson = asJsonString(user);
+
+        mockMvc.perform(MockMvcRequestBuilders.post("/users/create")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(userJson))
+                .andExpect(status().isBadRequest())
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON));
+    }
+
+    @Test
+    public void testCreateUserWithNullLastName() throws Exception {
+        Calendar calendar = Calendar.getInstance();
+        calendar.set(2000, Calendar.JANUARY, 1);
+        Date birthDate = calendar.getTime();
+        User user = new User("test@example.com", "Test", null, birthDate, "ADDRESS", "0997975514");
+
+        String userJson = asJsonString(user);
+
+        mockMvc.perform(MockMvcRequestBuilders.post("/users/create")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(userJson))
+                .andExpect(status().isBadRequest())
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON));
     }
 
     public static String asJsonString(final Object obj) {

@@ -5,9 +5,11 @@ import com.klimmenkov.testtask.exception.UserNotFoundException;
 import com.klimmenkov.testtask.model.User;
 import com.klimmenkov.testtask.repository.UserRepository;
 import com.klimmenkov.testtask.service.UserService;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 
 import java.lang.reflect.Field;
 import java.time.LocalDate;
