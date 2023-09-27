@@ -20,7 +20,7 @@ public class User {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Email
+    @Email(message = "Enter valid email. User correct pattern: example@example.com")
     @NotBlank
     private String email;
 
@@ -37,4 +37,13 @@ public class User {
     private String address;
 
     private String phoneNumber;
+
+    public User(String email, String firstName, String lastName, @NotNull Date birthDate, String address, String phoneNumber) {
+        this.email = email;
+        this.firstName = firstName;
+        this.lastName = lastName;
+        this.birthDate = birthDate;
+        this.address = address;
+        this.phoneNumber = phoneNumber;
+    }
 }

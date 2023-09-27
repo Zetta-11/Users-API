@@ -5,8 +5,13 @@ import com.klimmenkov.testtask.exception.AgeNotAllowedException;
 import com.klimmenkov.testtask.exception.UserNotFoundException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.FieldError;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
+
+import java.util.List;
+import java.util.stream.Collectors;
 
 @ControllerAdvice
 public class GlobalExceptionHandler {
@@ -26,7 +31,21 @@ public class GlobalExceptionHandler {
         ApiError apiError = new ApiError();
         apiError.setStatus(HttpStatus.BAD_REQUEST.value());
         apiError.setDetail(ex.getMessage());
-        apiError.setCode(403);
+        apiError.setCode(400);
+
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(apiError);
+    }
+
+    @ExceptionHandler(MethodArgumentNotValidException.class)
+    public ResponseEntity<ApiError> handleValidationExceptions(MethodArgumentNotValidException ex) {
+        ApiError apiError = new ApiError();
+        apiError.setStatus(HttpStatus.BAD_REQUEST.value());
+        apiError.setCode(400);
+
+        List<String> errors = ex.getBindingResult().getFieldErrors().stream()
+                .map(FieldError::getDefaultMessage)
+                .collect(Collectors.toList());
+        apiError.setErrors(errors);
 
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(apiError);
     }
