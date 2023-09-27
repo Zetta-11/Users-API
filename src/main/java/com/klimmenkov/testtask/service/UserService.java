@@ -4,16 +4,14 @@ import com.klimmenkov.testtask.model.User;
 
 import java.util.Date;
 import java.util.List;
-import java.util.Optional;
+import java.util.Map;
 
 public interface UserService {
     User createUser(User user);
 
     User updateUser(Long userId, User updatedUser);
 
-    Optional<User> getUserById(Long userId);
-
-    List<User> getAllUsers();
+    User partiallyUpdateUser(Long userId, Map<String, Object> updates);
 
     void deleteUser(Long userId);
 
