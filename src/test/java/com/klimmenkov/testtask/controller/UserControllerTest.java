@@ -2,7 +2,6 @@ package com.klimmenkov.testtask.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.klimmenkov.testtask.model.User;
-import jakarta.validation.ConstraintViolationException;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -32,7 +31,7 @@ public class UserControllerTest {
     private MockMvc mockMvc;
 
     @Test
-    public void testCreateAndDeleteUser() throws Exception {
+    public void testCreateUser() throws Exception {
         Calendar calendar = Calendar.getInstance();
         calendar.set(2000, Calendar.JANUARY, 1);
         Date birthDate = calendar.getTime();
@@ -43,6 +42,26 @@ public class UserControllerTest {
                         .content(asJsonString(user)))
                 .andExpect(status().isCreated())
                 .andExpect(jsonPath("$.id", notNullValue()))
+                .andReturn().getResponse().getContentAsString();
+
+        ObjectMapper objectMapper = new ObjectMapper();
+        Long userId = objectMapper.readTree(userJson).get("id").asLong();
+
+        mockMvc.perform(delete("/users/{userId}", userId))
+                .andExpect(status().isNoContent());
+    }
+
+    @Test
+    public void testDeleteUser() throws Exception {
+        Calendar calendar = Calendar.getInstance();
+        calendar.set(2000, Calendar.JANUARY, 1);
+        Date birthDate = calendar.getTime();
+        User user = new User("petr@gmail.com", "Petr", "Kulinich", birthDate, "123 Main St", "0506667788");
+
+        String userJson = mockMvc.perform(post("/users/create")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(asJsonString(user)))
+                .andExpect(status().isCreated())
                 .andReturn().getResponse().getContentAsString();
 
         ObjectMapper objectMapper = new ObjectMapper();
