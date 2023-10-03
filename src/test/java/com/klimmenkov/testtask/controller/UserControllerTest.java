@@ -2,6 +2,7 @@ package com.klimmenkov.testtask.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.klimmenkov.testtask.model.User;
+import jakarta.validation.ConstraintViolationException;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -89,10 +90,14 @@ public class UserControllerTest {
 
     @Test
     public void testUpdateUser() throws Exception {
+        Calendar calendar = Calendar.getInstance();
+        calendar.set(1990, Calendar.JANUARY, 1);
+        Date birthDate = calendar.getTime();
+
         mockMvc.perform(put("/users/{userId}", 3L)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(asJsonString(new User("test_updated@gmail.com", "UpdatedFirstName", "UpdatedLastName",
-                                new Date(), "UpdatedAddress", "UpdatedPhoneNumber"))))
+                                birthDate, "UpdatedAddress", "UpdatedPhoneNumber"))))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.id", notNullValue()))
                 .andExpect(jsonPath("$.firstName", is("UpdatedFirstName")))
@@ -132,7 +137,7 @@ public class UserControllerTest {
         Calendar calendar = Calendar.getInstance();
         calendar.set(2010, Calendar.JANUARY, 1);
         Date birthDate = calendar.getTime();
-        User user = new User("YoungUser", "LastName", "young@example.com", birthDate, "Address", "PhoneNumber");
+        User user = new User("young@example.com", "LastName", "FirstName", birthDate, "Address", "PhoneNumber");
 
         mockMvc.perform(post("/users/create")
                         .contentType(MediaType.APPLICATION_JSON)

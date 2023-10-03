@@ -1,20 +1,14 @@
 package com.klimmenkov.testtask.service.impl;
 
-import com.klimmenkov.testtask.exception.AgeNotAllowedException;
 import com.klimmenkov.testtask.exception.UserNotFoundException;
 import com.klimmenkov.testtask.model.User;
 import com.klimmenkov.testtask.repository.UserRepository;
 import com.klimmenkov.testtask.service.UserService;
-import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
-import org.springframework.web.bind.MethodArgumentNotValidException;
 
 import java.lang.reflect.Field;
-import java.time.LocalDate;
-import java.time.Period;
-import java.time.ZoneId;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -34,13 +28,6 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public User createUser(User user) {
-        LocalDate birthDate = user.getBirthDate().toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
-        LocalDate currentDate = LocalDate.now();
-
-        if (Period.between(birthDate, currentDate).getYears() < minAge) {
-            throw new AgeNotAllowedException("User's age is not allowed.");
-        }
-
         return userRepository.save(user);
     }
 

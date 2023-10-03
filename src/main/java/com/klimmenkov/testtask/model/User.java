@@ -1,5 +1,6 @@
 package com.klimmenkov.testtask.model;
 
+import com.klimmenkov.testtask.validator.AgeConstraint;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
@@ -30,8 +31,8 @@ public class User {
     @NotBlank
     private String lastName;
 
-    @NotNull
     @Past
+    @AgeConstraint
     private Date birthDate;
 
     private String address;

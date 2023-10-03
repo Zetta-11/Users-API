@@ -1,8 +1,8 @@
 package com.klimmenkov.testtask.exceptionHandler;
 
 import com.klimmenkov.testtask.error.ApiError;
-import com.klimmenkov.testtask.exception.AgeNotAllowedException;
 import com.klimmenkov.testtask.exception.UserNotFoundException;
+import jakarta.validation.ConstraintViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.FieldError;
@@ -28,8 +28,8 @@ public class GlobalExceptionHandler {
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(apiError);
     }
 
-    @ExceptionHandler(AgeNotAllowedException.class)
-    public ResponseEntity<ApiError> handleAgeNotAllowedException(AgeNotAllowedException ex) {
+    @ExceptionHandler(ConstraintViolationException.class)
+    public ResponseEntity<ApiError> handleAgeNotAllowedException(ConstraintViolationException ex) {
         ApiError apiError = new ApiError();
         apiError.setStatus(HttpStatus.BAD_REQUEST.value());
         apiError.setDetail(ex.getMessage());
