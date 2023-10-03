@@ -37,7 +37,7 @@ public class UserControllerTest {
         Date birthDate = calendar.getTime();
         User user = new User("petr@gmail.com", "Petr", "Kulinich", birthDate, "123 Main St", "0506667788");
 
-        String userJson = mockMvc.perform(post("/users/create")
+        String userJson = mockMvc.perform(post("/users")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(asJsonString(user)))
                 .andExpect(status().isCreated())
@@ -58,7 +58,7 @@ public class UserControllerTest {
         Date birthDate = calendar.getTime();
         User user = new User("petr@gmail.com", "Petr", "Kulinich", birthDate, "123 Main St", "0506667788");
 
-        String userJson = mockMvc.perform(post("/users/create")
+        String userJson = mockMvc.perform(post("/users")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(asJsonString(user)))
                 .andExpect(status().isCreated())
@@ -82,7 +82,7 @@ public class UserControllerTest {
         Date birthDate = calendar.getTime();
         User originalUser = new User("john_doe@gmail.com", "John", "Doe", birthDate, "123 Main St", "555-555-5555");
 
-        String userJson = mockMvc.perform(post("/users/create")
+        String userJson = mockMvc.perform(post("/users")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(asJsonString(originalUser)))
                 .andExpect(status().isCreated())
@@ -158,7 +158,7 @@ public class UserControllerTest {
         Date birthDate = calendar.getTime();
         User user = new User("young@example.com", "LastName", "FirstName", birthDate, "Address", "PhoneNumber");
 
-        mockMvc.perform(post("/users/create")
+        mockMvc.perform(post("/users")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(asJsonString(user)))
                 .andExpect(status().isBadRequest());
@@ -173,7 +173,7 @@ public class UserControllerTest {
 
         String userJson = asJsonString(user);
 
-        mockMvc.perform(MockMvcRequestBuilders.post("/users/create")
+        mockMvc.perform(MockMvcRequestBuilders.post("/users")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(userJson))
                 .andExpect(status().isBadRequest())
@@ -190,7 +190,7 @@ public class UserControllerTest {
 
         String userJson = asJsonString(user);
 
-        mockMvc.perform(MockMvcRequestBuilders.post("/users/create")
+        mockMvc.perform(MockMvcRequestBuilders.post("/users")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(userJson))
                 .andExpect(status().isBadRequest())
@@ -206,7 +206,7 @@ public class UserControllerTest {
 
         String userJson = asJsonString(user);
 
-        mockMvc.perform(MockMvcRequestBuilders.post("/users/create")
+        mockMvc.perform(MockMvcRequestBuilders.post("/users")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(userJson))
                 .andExpect(status().isBadRequest())
