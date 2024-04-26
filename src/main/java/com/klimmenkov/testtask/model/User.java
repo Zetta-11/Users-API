@@ -21,7 +21,7 @@ public class User {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Email(message = "Enter valid email. User correct pattern: example@example.com")
+    @Email(message = "Enter valid email. Use correct pattern: example@example.com")
     @NotBlank
     private String email;
 
